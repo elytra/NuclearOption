@@ -29,7 +29,6 @@ object NuclearOption {
   var prevTally = 0f
   var nukeTriggered = false
   var nukeTick = 0 // the tick that a nuke was launched
-  val 
 
   @EventHandler
   def init(e: FMLPreInitializationEvent): Unit = {
