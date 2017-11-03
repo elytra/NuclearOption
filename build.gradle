@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -16,12 +16,12 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "2.3"
 group= "capitalthree.NuclearOption" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "NuclearOption-1.12"
+archivesBaseName = "NuclearOption-1.9"
 
 minecraft {
-    version = "1.12.2-14.23.0.2493"
+    version = "1.9.4-12.17.0.2051"
     runDir = "run"
-    mappings = "snapshot_20170926"
+    mappings = "stable_26"
 }
 
 dependencies {

@@ -29,6 +29,7 @@ object NuclearOption {
   var prevTally = 0f
   var nukeTriggered = false
   var nukeTick = 0 // the tick that a nuke was launched
+  val 
 
   @EventHandler
   def init(e: FMLPreInitializationEvent): Unit = {
@@ -68,7 +69,7 @@ object NuclearOption {
   }
 
   @EventHandler
-  def join(e: PlayerLoggedInEvent): Unit = e.player.sendMessage(new TextComponentString(cfg.welcome))
+  def join(e: PlayerLoggedInEvent): Unit = e.player.addChatMessage(new TextComponentString(cfg.welcome))
 
   @EventHandler
   def part(e: PlayerLoggedOutEvent): Unit = {
@@ -78,7 +79,7 @@ object NuclearOption {
 
   def spamAllPlayers(message: String): Unit = {
     val messageComponent = new TextComponentString(message)
-    FMLCommonHandler.instance().getMinecraftServerInstance.getPlayerList.getPlayers.foreach(_.sendMessage(messageComponent))
+    FMLCommonHandler.instance().getMinecraftServerInstance.getPlayerList.getPlayerList.foreach(_.addChatMessage(messageComponent))
   }
 
   /**
@@ -87,7 +88,7 @@ object NuclearOption {
   def checkVotes(): Boolean = {
     if (nukeTriggered) return false
 
-    val loggedIn = FMLCommonHandler.instance().getMinecraftServerInstance.getPlayerList.getPlayers.map(_.getUniqueID).toSet
+    val loggedIn = FMLCommonHandler.instance().getMinecraftServerInstance.getPlayerList.getPlayerList.map(_.getUniqueID).toSet
     votes.retain(loggedIn)
     val tally = votes.size.toFloat / loggedIn.size
 
@@ -112,7 +113,7 @@ object NuclearOption {
 }
 
 object NukeCommand extends CommandBase {
-  override def getName = "nuke"
+  override def getCommandName = "nuke"
 
   override def execute(server: MinecraftServer, sender: ICommandSender, args: Array[String]): Unit = {
     if (NuclearOption.nukeTriggered) return
@@ -123,7 +124,7 @@ object NukeCommand extends CommandBase {
     }
 
     if (NuclearOption.tick < 10*60*20) {
-      player.sendMessage(new TextComponentString(NuclearOption.cfg.tooearly))
+      player.addChatMessage(new TextComponentString(NuclearOption.cfg.tooearly))
       return
     }
 
@@ -131,10 +132,10 @@ object NukeCommand extends CommandBase {
     if (nuke) NuclearOption.votes.add(player.getUniqueID)
 
     if (! NuclearOption.checkVotes())
-      player.sendMessage(new TextComponentString(if (nuke) NuclearOption.cfg.nukeon else NuclearOption.cfg.nukeoff))
+      player.addChatMessage(new TextComponentString(if (nuke) NuclearOption.cfg.nukeon else NuclearOption.cfg.nukeoff))
   }
 
-  override def getUsage(sender: ICommandSender) = "/nuke"
+  override def getCommandUsage(sender: ICommandSender) = "/nuke"
 
   override def checkPermission(server: MinecraftServer, sender: ICommandSender): Boolean = sender.isInstanceOf[EntityPlayerMP]
 }
@@ -147,7 +148,6 @@ case class NukeOptionStrings(c: Configuration) {
   val nukeoff: String = opt("nukeoff", "Wait, nevermind!  No nukes here please!")
   val p10: String = opt("10percent", "Ghost reporting.")
   val p25: String = opt("25percent", "Somebody call for an exterminator?")
-  val nukeidle: String = opt("nukeidle", "You just gonna keep waving that nuke around?  I mean... don't let me stop you... just wondering.")
   val timerstart: String = opt("timerstart", "Nuclear launch detected!  (Save your work!)")
   val timertick: String = opt("timertick", "Nukes will land in")
 
