@@ -1,8 +1,8 @@
 [
 {
-  "modid": "btfu",
-  "name": "BTFU",
-  "description": "Server backup done right",
+  "modid": "nukeoption",
+  "name": "NuclearOption",
+  "description": "Simple vote-for-server-restart mod",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
