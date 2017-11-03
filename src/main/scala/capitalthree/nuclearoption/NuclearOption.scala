@@ -147,7 +147,6 @@ case class NukeOptionStrings(c: Configuration) {
   val nukeoff: String = opt("nukeoff", "Wait, nevermind!  No nukes here please!")
   val p10: String = opt("10percent", "Ghost reporting.")
   val p25: String = opt("25percent", "Somebody call for an exterminator?")
-  val nukeidle: String = opt("nukeidle", "You just gonna keep waving that nuke around?  I mean... don't let me stop you... just wondering.")
   val timerstart: String = opt("timerstart", "Nuclear launch detected!  (Save your work!)")
   val timertick: String = opt("timertick", "Nukes will land in")
 
