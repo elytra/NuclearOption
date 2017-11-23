@@ -28,7 +28,7 @@ object NuclearOption {
   var tick = 0
   var prevTally = 0f
   var nukeTriggered = false
-  var nukeTick = 0 // the tick that a nuke was launched
+  var nukeMilli: Long = 0 // the tick that a nuke was launched
 
   @EventHandler
   def init(e: FMLPreInitializationEvent): Unit = {
@@ -37,7 +37,8 @@ object NuclearOption {
     cfg = NukeOptionStrings(new Configuration(e.getSuggestedConfigurationFile))
 
     val nukeSeconds = 60
-    val warningSeconds = Set(45, 30, 15, 10, 9, 8, 7, 6, 5, 4, 3)
+    val warningSeconds = Array(45, 30, 15, 10, 9, 8, 7, 6, 5, 4, 3, -1)
+    var warningPointer = 0
 
     val tickHandler = new Object {
       @SubscribeEvent
@@ -45,13 +46,12 @@ object NuclearOption {
         if (event.phase == TickEvent.Phase.START) {
           tick += 1
           if (nukeTriggered) {
-            val passed = tick - nukeTick
-            if (passed%20 == 0) {
-              val secsLeft = nukeSeconds - passed/20
-              if (secsLeft == 0) {
-                FMLCommonHandler.instance().getMinecraftServerInstance.initiateShutdown()
-              } else if (warningSeconds(secsLeft)) {
-                spamAllPlayers(s"${cfg.timertick} $secsLeft seconds")
+            val remainingSec = nukeSeconds - (System.currentTimeMillis() - nukeMilli)/1000
+            if (remainingSec <= 0) {
+              FMLCommonHandler.instance().getMinecraftServerInstance.initiateShutdown()
+            } else {
+              while (warningSeconds(warningPointer) >= remainingSec) {
+                spamAllPlayers(s"${cfg.timertick} ${warningSeconds(warningPointer)} seconds")
               }
             }
           }
@@ -67,10 +67,10 @@ object NuclearOption {
     e.registerServerCommand(NukeCommand)
   }
 
-  @EventHandler
+  @SubscribeEvent
   def join(e: PlayerLoggedInEvent): Unit = e.player.addChatMessage(new TextComponentString(cfg.welcome))
 
-  @EventHandler
+  @SubscribeEvent
   def part(e: PlayerLoggedOutEvent): Unit = {
     votes.remove(e.player.getUniqueID)
     checkVotes()
@@ -93,7 +93,7 @@ object NuclearOption {
 
     if (tally > .5) {
       nukeTriggered = true
-      nukeTick = tick
+      nukeMilli = System.currentTimeMillis()
       spamAllPlayers(cfg.timerstart)
       return true
     }
