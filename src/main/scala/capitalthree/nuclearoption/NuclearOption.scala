@@ -52,6 +52,7 @@ object NuclearOption {
             } else {
               while (warningSeconds(warningPointer) >= remainingSec) {
                 spamAllPlayers(s"${cfg.timertick} ${warningSeconds(warningPointer)} seconds")
+                warningPointer += 1
               }
             }
           }
@@ -122,7 +123,7 @@ object NukeCommand extends CommandBase {
       case _ => return
     }
 
-    if (NuclearOption.tick < 10*60*20) {
+    if (NuclearOption.tick < NuclearOption.cfg.graceticks) {
       player.sendMessage(new TextComponentString(NuclearOption.cfg.tooearly))
       return
     }
@@ -141,8 +142,10 @@ object NukeCommand extends CommandBase {
 
 case class NukeOptionStrings(c: Configuration) {
   private def opt(name: String, defval: String) = c.get("strings", name, defval).getString
+  private def opti(name: String, defval: Integer, comment: String) = c.get("timers", name, defval, comment).getInt
   val welcome: String = opt("welcome", "Greetings!  This minecraft server is equipped with a doomsday device.  If it becomes unstable, use /nuke to vote for a restart.")
   val tooearly: String = opt("tooearly", "We require more vespene gas.")
+  val graceticks: Int = 20*opti("tooearly", 600, "Time after a server restart before it can be restarted again (in seconds)")
   val nukeon: String = opt("nukeon", "You are now hailing nukes.")
   val nukeoff: String = opt("nukeoff", "Wait, nevermind!  No nukes here please!")
   val p10: String = opt("10percent", "Ghost reporting.")
