@@ -58,6 +58,17 @@ object NuclearOption {
           }
         }
       }
+
+      @SubscribeEvent
+      def join(e: PlayerLoggedInEvent) {
+        if (! cfg.welcome.isEmpty) e.player.sendMessage(new TextComponentString(cfg.welcome))
+      }
+
+      @SubscribeEvent
+      def part(e: PlayerLoggedOutEvent): Unit = {
+        votes.remove(e.player.getUniqueID)
+        checkVotes()
+      }
     }
 
     MinecraftForge.EVENT_BUS.register(tickHandler)
@@ -66,15 +77,6 @@ object NuclearOption {
   @EventHandler
   def start(e: FMLServerStartingEvent): Unit = {
     e.registerServerCommand(NukeCommand)
-  }
-
-  @SubscribeEvent
-  def join(e: PlayerLoggedInEvent): Unit = e.player.sendMessage(new TextComponentString(cfg.welcome))
-
-  @SubscribeEvent
-  def part(e: PlayerLoggedOutEvent): Unit = {
-    votes.remove(e.player.getUniqueID)
-    checkVotes()
   }
 
   def spamAllPlayers(message: String): Unit = {
