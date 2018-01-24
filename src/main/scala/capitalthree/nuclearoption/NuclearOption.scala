@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent
 import net.minecraftforge.fml.common.{FMLCommonHandler, Mod}
 import org.apache.logging.log4j.Logger
 
-@Mod(modid = "nuclearoption", version = "1", name = "NuclearOption", modLanguage = "scala", acceptableRemoteVersions="*")
+@Mod(modid = "nuclearoption", version = "2.6", name = "NuclearOption", modLanguage = "scala", acceptableRemoteVersions="*")
 object NuclearOption {
   var cfg:NukeOptionStrings = null
   var logger:Logger = null
